@@ -1,366 +1,187 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Microscope Resolution Calculator</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Objective Resolution Calculator</title>
   <style>
-    :root {
-      --bg: #f5f7fb;
-      --panel: #ffffff;
-      --primary: #1e5eff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --border: #dfe5f1;
-      --good: #166534;
-      --warn: #b45309;
-      --bad: #b91c1c;
-      --shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    :root{
+      --bg:#f5f7fb; --panel:#fff; --muted:#6b7280; --text:#111827; --primary:#1e5eff;
+      --border:#dfe5f1; --shadow:0 8px 20px rgba(15,23,42,0.06);
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-    }
-
-    .wrapper {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-    }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 24px;
-    }
-
-    h1 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 2rem;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      margin-bottom: 24px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-    }
-
-    label {
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    input {
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 1rem;
-      background: #fff;
-    }
-
-    input:focus {
-      outline: 2px solid rgba(30, 94, 255, 0.18);
-      border-color: var(--primary);
-    }
-
-    .actions {
-      margin-top: 24px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 18px;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    button.secondary {
-      background: #eef2ff;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .results {
-      margin-top: 28px;
-      border: 1px solid var(--border);
-      background: #f9fbff;
-      border-radius: 12px;
-      padding: 20px;
-    }
-
-    .results h2 {
-      margin-top: 0;
-      font-size: 1.3rem;
-    }
-
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      border-bottom: 1px solid var(--border);
-      padding: 10px 0;
-      flex-wrap: wrap;
-    }
-
-    .result-row:last-child {
-      border-bottom: none;
-    }
-
-    .label {
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .value {
-      font-weight: 700;
-    }
-
-    .status {
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 999px;
-      display: inline-block;
-    }
-
-    .ok {
-      background: #dcfce7;
-      color: var(--good);
-    }
-
-    .warn {
-      background: #fef3c7;
-      color: var(--warn);
-    }
-
-    .bad {
-      background: #fee2e2;
-      color: var(--bad);
-    }
-
-    .note {
-      margin-top: 16px;
-      font-size: 0.95rem;
-      color: var(--muted);
-    }
-
-    .formula {
-      margin-top: 18px;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 600px) {
-      .wrapper { padding: 12px; }
-      .panel { padding: 16px; }
-      h1 { font-size: 1.5rem; }
-    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
+    .wrap{max-width:900px;margin:36px auto;padding:18px}
+    .card{background:var(--panel);border-radius:12px;padding:22px;border:1px solid var(--border);box-shadow:var(--shadow)}
+    h1{margin:0 0 6px;font-size:1.6rem}
+    p.lead{margin:0 0 18px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+    label{display:block;font-weight:600;margin-bottom:8px;color:#0f172a}
+    select, button{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:0.98rem}
+    .actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+    button.primary{background:var(--primary);border:none;color:#fff;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700}
+    button.secondary{background:#eef2ff;color:var(--text);border:1px solid var(--border)}
+    .results{margin-top:20px;background:#fbfdff;border:1px solid var(--border);padding:16px;border-radius:10px}
+    .row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+    .row:last-child{border-bottom:none}
+    .label{color:var(--muted);font-size:0.95rem}
+    .val{font-weight:800}
+    .note{margin-top:12px;color:var(--muted);font-size:0.92rem}
+    @media (max-width:560px){.row{flex-direction:column;align-items:flex-start}}
+    .small{font-size:0.9rem;color:var(--muted)}
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="panel">
-      <h1>Resolution Calculator</h1>
-      <div class="subtitle">
-        Based on numerical aperture (NA), wavelength, and optional objective magnification / camera pixel size.
-      </div>
+  <div class="wrap">
+    <div class="card">
+      <h1>Objective Resolution Calculator</h1>
+      <p class="lead">
+        Using: Lateral (XY) = λ / (2 × NA) and Axial (Z) = 2λ / NA².
+        Magnification is included as a reference only; it does not change the fundamental optical resolution.
+      </p>
 
       <div class="grid">
-        <div class="field">
-          <label for="wavelength">Wavelength (nm)</label>
-          <input id="wavelength" type="number" step="0.1" value="550" />
+        <div>
+          <label for="na">Numerical Aperture (NA)</label>
+          <select id="na">
+            <option value="0.10">0.10</option>
+            <option value="0.25">0.25</option>
+            <option value="0.40">0.40</option>
+            <option value="0.65">0.65</option>
+            <option value="0.75">0.75</option>
+            <option value="0.85">0.85</option>
+            <option value="1.00">1.00</option>
+            <option value="1.20">1.20</option>
+            <option value="1.30">1.30</option>
+            <option value="1.40" selected>1.40</option>
+            <option value="1.45">1.45</option>
+            <option value="1.49">1.49</option>
+          </select>
         </div>
 
-        <div class="field">
-          <label for="na">NA (Numerical Aperture)</label>
-          <input id="na" type="number" step="0.01" value="1.4" />
+        <div>
+          <label for="medium">Immersion / refractive index</label>
+          <select id="medium">
+            <option value="1.000">Air (n = 1.000)</option>
+            <option value="1.333">Water (n = 1.333)</option>
+            <option value="1.470">Glycerin (n = 1.470)</option>
+            <option value="1.518" selected>Oil (n = 1.518)</option>
+          </select>
         </div>
 
-        <div class="field">
-          <label for="n">Refractive index (n)</label>
-          <input id="n" type="number" step="0.01" value="1.0" />
+        <div>
+          <label for="mag">Objective magnification (reference)</label>
+          <select id="mag">
+            <option value="2">2×</option>
+            <option value="4">4×</option>
+            <option value="5">5×</option>
+            <option value="10">10×</option>
+            <option value="20">20×</option>
+            <option value="25">25×</option>
+            <option value="40">40×</option>
+            <option value="60" selected>60×</option>
+            <option value="63">63×</option>
+            <option value="100">100×</option>
+          </select>
         </div>
 
-        <div class="field">
-          <label for="mag">Objective magnification</label>
-          <input id="mag" type="number" step="0.1" value="60" placeholder="Optional" />
-        </div>
-
-        <div class="field">
-          <label for="cameraPixel">Camera pixel size (µm)</label>
-          <input id="cameraPixel" type="number" step="0.01" value="6.5" placeholder="Optional" />
-        </div>
-
-        <div class="field">
-          <label for="nyquistFactor">Nyquist factor</label>
-          <input id="nyquistFactor" type="number" step="0.1" value="2.3" />
+        <div>
+          <label>Wavelength used</label>
+          <div class="small">Default λ = 550 nm (green light)</div>
         </div>
       </div>
 
       <div class="actions">
-        <button id="calculateBtn" type="button">Calculate</button>
-        <button id="resetBtn" type="button" class="secondary">Reset</button>
+        <button id="calc" class="primary" type="button">Calculate</button>
+        <button id="reset" class="secondary" type="button">Reset defaults</button>
       </div>
 
-      <div class="results">
-        <h2>Results (camera values excluded)</h2>
-
-        <div class="result-row">
-          <div class="label">Lateral resolution</div>
-          <div class="value" id="lateralResult">—</div>
+      <div class="results" aria-live="polite">
+        <div class="row">
+          <div class="label">Lateral (XY) resolution</div>
+          <div class="val" id="lateralNm">— nm</div>
         </div>
 
-        <div class="result-row">
-          <div class="label">Axial resolution</div>
-          <div class="value" id="axialResult">—</div>
+        <div class="row">
+          <div class="label">Axial (Z) resolution</div>
+          <div class="val" id="axialNm">— nm</div>
         </div>
 
-        <div class="result-row">
-          <div class="label">Recommended Nyquist pixel</div>
-          <div class="value" id="nyquistResult">—</div>
+        <div class="row">
+          <div class="label">Total resolution (combined)</div>
+          <div class="val" id="totalNm">— nm</div>
         </div>
 
-        <div id="cameraSummary" style="margin-top: 18px;">
-          <div class="result-row">
-            <div class="label">Sampling status</div>
-            <div class="value"><span id="samplingStatus" class="status">—</span></div>
-          </div>
-
-          <div class="result-row">
-            <div class="label">Effective pixel at sample</div>
-            <div class="value" id="effectivePixelResult">—</div>
-          </div>
-
-          <div class="result-row">
-            <div class="label">Required magnification</div>
-            <div class="value" id="requiredMagResult">—</div>
-          </div>
+        <div class="row">
+          <div class="label">Lateral / Axial in µm</div>
+          <div class="val" id="latAxUm">— µm / — µm</div>
         </div>
 
-        <div class="note">
-          Optical resolution depends on wavelength and NA. Magnification and camera pixel size matter for sampling.
+        <div class="row">
+          <div class="label">Reference magnification</div>
+          <div class="val" id="magLabel">—</div>
         </div>
-      </div>
 
-      <div class="formula">
-        <strong>Formulas used:</strong><br />
-        Lateral resolution ≈ 0.61 × λ / NA<br />
-        Axial resolution ≈ 2 × n × λ / NA²<br />
-        Effective pixel size = camera pixel size / objective magnification
+        <div class="row">
+          <div class="label">Resolution ÷ magnification (reference)</div>
+          <div class="val" id="resDivMag">— nm</div>
+        </div>
+
+        <div class="note" id="explain">
+          Note: This uses λ = 550 nm as the default wavelength. The medium selection is shown for immersion context; the formulas used here are the standard objective-limited estimates for lateral and axial resolution.
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    function lateralResolution(wavelengthNm, NA) {
-      const wavelengthUm = wavelengthNm / 1000;
-      return 0.61 * wavelengthUm / NA;
-    }
+    const DEFAULT_WAVELENGTH_NM = 550;
 
-    function axialResolution(wavelengthNm, NA, n = 1.0) {
-      const wavelengthUm = wavelengthNm / 1000;
-      return (2.0 * n * wavelengthUm) / (NA ** 2);
-    }
+    function compute() {
+      const NA = Number(document.getElementById('na').value);
+      const mediumN = Number(document.getElementById('medium').value);
+      const mag = Number(document.getElementById('mag').value);
 
-    function recommendedPixelForNyquist(lateralResUm, factor = 2.3) {
-      return lateralResUm / factor;
-    }
+      const wavelength = DEFAULT_WAVELENGTH_NM;
 
-    function effectivePixelSize(cameraPixelUm, magnification) {
-      return cameraPixelUm / magnification;
-    }
-
-    function requiredMagnification(cameraPixelUm, targetPixelUm) {
-      return cameraPixelUm / targetPixelUm;
-    }
-
-    function calculate() {
-      const wavelength = parseFloat(document.getElementById('wavelength').value);
-      const NA = parseFloat(document.getElementById('na').value);
-      const n = parseFloat(document.getElementById('n').value || 1.0);
-      const mag = parseFloat(document.getElementById('mag').value);
-      const cameraPixel = parseFloat(document.getElementById('cameraPixel').value);
-      const nyquistFactor = parseFloat(document.getElementById('nyquistFactor').value || 2.3);
-
-      if (!wavelength || !NA || !n || NA <= 0) {
-        alert("Please enter valid values for wavelength, NA, and refractive index.");
+      if (!(NA > 0) || !(wavelength > 0)) {
+        alert('Please select a valid NA.');
         return;
       }
 
-      const lat = lateralResolution(wavelength, NA);
-      const ax = axialResolution(wavelength, NA, n);
-      const recPix = recommendedPixelForNyquist(lat, nyquistFactor);
+      // Formula requested by user:
+      // Lateral XY: d = λ / (2 × NA)
+      // Axial Z: d = 2λ / NA²
+      const lateralNm = wavelength / (2 * NA);
+      const axialNm = (2 * wavelength) / (NA * NA);
 
-      document.getElementById('lateralResult').textContent = `${lat.toFixed(4)} µm`;
-      document.getElementById('axialResult').textContent = `${ax.toFixed(4)} µm`;
-      document.getElementById('nyquistResult').textContent = `${recPix.toFixed(4)} µm`;
+      const totalNm = Math.sqrt((lateralNm * lateralNm) + (axialNm * axialNm));
+      const lateralUm = lateralNm / 1000;
+      const axialUm = axialNm / 1000;
 
-      const hasCameraData = Number.isFinite(mag) && Number.isFinite(cameraPixel) && mag > 0 && cameraPixel > 0;
+      const resDivMag = lateralNm / mag;
 
-      const statusEl = document.getElementById('samplingStatus');
-      const effectiveEl = document.getElementById('effectivePixelResult');
-      const requiredMagEl = document.getElementById('requiredMagResult');
+      document.getElementById('lateralNm').textContent = lateralNm.toFixed(1) + ' nm';
+      document.getElementById('axialNm').textContent = axialNm.toFixed(1) + ' nm';
+      document.getElementById('totalNm').textContent = totalNm.toFixed(1) + ' nm';
+      document.getElementById('latAxUm').textContent = `${lateralUm.toFixed(3)} µm / ${axialUm.toFixed(3)} µm`;
+      document.getElementById('magLabel').textContent = `${mag}×`;
+      document.getElementById('resDivMag').textContent = resDivMag.toFixed(2) + ' nm';
 
-      if (hasCameraData) {
-        const eff = effectivePixelSize(cameraPixel, mag);
-        const reqMag = requiredMagnification(cameraPixel, recPix);
-
-        effectiveEl.textContent = `${eff.toFixed(4)} µm/pixel`;
-        requiredMagEl.textContent = `${reqMag.toFixed(1)}x`;
-
-        if (eff <= recPix) {
-          statusEl.textContent = 'OK';
-          statusEl.className = 'status ok';
-        } else {
-          statusEl.textContent = 'UNDER-SAMPLED';
-          statusEl.className = 'status bad';
-        }
-      } else {
-        statusEl.textContent = '—';
-        statusEl.className = 'status';
-        effectiveEl.textContent = '—';
-        requiredMagEl.textContent = '—';
-      }
+      document.getElementById('explain').textContent =
+        `Note: Using λ = ${wavelength} nm, NA = ${NA}, and immersion medium n = ${mediumN.toFixed(3)}. Lateral (XY) = λ / (2 × NA) = ${lateralNm.toFixed(1)} nm; Axial (Z) = 2λ / NA² = ${axialNm.toFixed(1)} nm. Total resolution shown above is sqrt(XY² + Z²), for comparison only.`;
     }
 
-    function resetForm() {
-      document.getElementById('wavelength').value = 550;
-      document.getElementById('na').value = 1.4;
-      document.getElementById('n').value = 1.0;
+    function resetDefaults() {
+      document.getElementById('na').value = 1.40;
+      document.getElementById('medium').value = 1.518;
       document.getElementById('mag').value = 60;
-      document.getElementById('cameraPixel').value = 6.5;
-      document.getElementById('nyquistFactor').value = 2.3;
-      calculate();
+      compute();
     }
 
-    document.getElementById('calculateBtn').addEventListener('click', calculate);
-    document.getElementById('resetBtn').addEventListener('click', resetForm);
-    window.addEventListener('DOMContentLoaded', calculate);
+    document.getElementById('calc').addEventListener('click', compute);
+    document.getElementById('reset').addEventListener('click', resetDefaults);
+    window.addEventListener('DOMContentLoaded', compute);
   </script>
 </body>
 </html>
